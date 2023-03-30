@@ -62,7 +62,10 @@ function App() {
     }
   }
 
-  
+  setInterval(() => {
+    listUpcomingEvents();
+  }, 1000*60*5);
+
   return (
     <div className="App">
       
@@ -74,7 +77,6 @@ function App() {
         <button id="signin_button" onClick={() => {
           apiCalendar.handleAuthClick()
           changeLoggedIn()
-          listUpcomingEvents
         }}> Sign In </button>
       )}
 
@@ -136,7 +138,7 @@ function createEvent(e, i){
     <p class="text-3xl font-bold uppercase">${e.name}</p>
   </div>
   <div class="p-2 md:p-4 lg:p-6 grid gap-2 md:gap-4">
-    <h2 class="font-bold text-2xl">Ore ${e.dateRange}  ${e.location}</h2>
+    <h2 class="font-bold text-2xl">Ore ${e.dateRange} ${e.location}</h2>
   </div>
 </article>`
 }
