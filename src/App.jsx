@@ -49,6 +49,8 @@ function App() {
       }
       document.getElementById("events-container").innerHTML = outputs.join('');
       createTitle();
+      // document.getElementById('events_button').style.visibility = 'hidden';
+      document.getElementById('root').remove()
 
     } catch (err) {
       console.log(err.message)
