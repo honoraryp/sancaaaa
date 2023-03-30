@@ -34,8 +34,8 @@ function App() {
         let cal = calendar_list.result.items[i];
         await apiCalendar.listEvents({
           calendarId: cal.id,
-          timeMin: new Date(dieciminutifa).toISOString(),
-          timeMax: new Date(tradieciminuti).toISOString(),
+          // timeMin: new Date(dieciminutifa).toISOString(),
+          // timeMax: new Date(tradieciminuti).toISOString(),
           showDeleted: false,
           singleEvents: true,
           orderBy: 'startTime'
