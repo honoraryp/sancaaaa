@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ApiCalendar from 'react-google-calendar-api';
 import './App.css'
 
+let header = document.getElementById("my_header");
 
 function App() {
   
@@ -24,63 +25,39 @@ function App() {
 
   async function listUpcomingEvents() {
     let events;
-    let page_token = null;
     let outputs = [];
-    do{
-      try {
-      
-        let calendar_list = await apiCalendar.listCalendars();
-        // console.log(calendar_list);
-        const dieciminutifa = Date.now()-1000*60*60*24; //un giorno prima
-        const tradieciminuti = Date.now()+1000*60*60*24; //un giorno dopo
-        for(let i=0; i<calendar_list.result.items.length; i++){
-          let cal = calendar_list.result.items[i];
-          await apiCalendar.listEvents({
-            calendarId: cal.id,
-            timeMin: new Date(dieciminutifa).toISOString(),
-            timeMax: new Date(tradieciminuti).toISOString(),
-            showDeleted: false,
-            singleEvents: true,
-            orderBy: 'startTime'
-          }).then(({ result }) => {
+    try {
+      let calendar_list = await apiCalendar.listCalendars();
+      const dieciminutifa = Date.now()-1000*60*60*24; //un giorno prima
+      const tradieciminuti = Date.now()+1000*60*60*24; //un giorno dopo
+      for(let i=0; i<calendar_list.result.items.length; i++){
+        let cal = calendar_list.result.items[i];
+        await apiCalendar.listEvents({
+          calendarId: cal.id,
+          timeMin: new Date(dieciminutifa).toISOString(),
+          timeMax: new Date(tradieciminuti).toISOString(),
+          showDeleted: false,
+          singleEvents: true,
+          orderBy: 'startTime'
+        }).then(({ result }) => {
             events = result.items
-          });
-          // let output = events.reduce(
-          //   (str, event) => `${str}${event.summary} (${event.start.dateTime || event.start.date})\n`);
-          // console.log(output)
-          // outputs.push(output);
-          // document.getElementById('content').innerText = outputs;
-          
-
-          // events.map((event, i) => {
-          //   const start = event.start.dateTime || event.start.date;
-          //   // console.log(`${start} - ${event.summary}`);
-          // });
-          // outputs.push(eventi);
-          // console.log(outputs)
-          let processedEvents = events.map(e => mapEventObject(e));
-          let ev= processedEvents.map((event, i) => createEvent(event, i)).join('')
-          if(ev != null){
-            outputs.push(ev);
-          }
-        }
-        console.log(outputs)
-        document.getElementById("events-container").innerHTML = outputs;
+        });
+        let processedEvents = events.map(e => mapEventObject(e));
+        let ev= processedEvents.map((event, i) => createEvent(event, i)).join('')
+        outputs.push(ev);
         
-      
-      } catch (err) {
-        console.log(err.message)
       }
+      document.getElementById("events-container").innerHTML = outputs.join('');
+      createTitle();
 
-      if (!events || events.length == 0) {
-        document.getElementById('content').innerText = 'No events found.';
-        return;
-      }
-      // Flatten to string to display
-      
+    } catch (err) {
+      console.log(err.message)
+    }
 
-      page_token = calendar_list.nextPageToken;
-    }while(page_token != null);
+    if (!events || events.length == 0) {
+      document.getElementById('events-container').innerHTML = 'No events found.';
+      return;
+    }
   }
 
   
@@ -95,11 +72,9 @@ function App() {
         <button id="signin_button" onClick={() => {
           apiCalendar.handleAuthClick()
           changeLoggedIn()
-          .then(listUpcomingEvents)
+          listUpcomingEvents
         }}> Sign In </button>
       )}
-
-      <pre id="content"></pre>
 
     </div>
   )
@@ -118,7 +93,7 @@ function processDate(date){
   const minute = getMinute(date.getMinutes());
   const time = hour && `${hour}:${minute}`;
   return{
-    day: date.getDay(),
+    day: date.getDate(),
     weekday: getDayOfWeek(date.getDay()),
     month: getMonth(date.getMonth()),
     year: date.getFullYear(),
@@ -164,8 +139,8 @@ function createEvent(e, i){
 </article>`
 }
 
-function createTitle(e){
-  let title = processDate(new Date(e.start.dateTime));
+function createTitle(){
+  let title = processDate(new Date(Date.now()));
   let titolo = title.weekday+" "+title.day+" "+title.month+" "+title.year;
   header.innerHTML = titolo;
   return 
