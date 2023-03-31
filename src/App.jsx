@@ -122,7 +122,7 @@ function mapEventObject(event){
     dateRange = `${startDate.time}`;
   }
   return {
-    name: event.summary,
+    name: event.summary.toUpperCase(),
     start: startDate,
     end: endDate,
     dateRange,
@@ -133,14 +133,15 @@ function mapEventObject(event){
 function createEvent(e, i){
   const colors = ['blue', 'amber', 'indigo', 'pink', 'rose'];
   const colorScheme = colors[getRandomNumBetween(0, colors.length - 1)];
+
   return `<article class="bg-white shadow-xl shadow-slate-200 rounded-lg">
-  <div class="p-2 shadow bg-${colorScheme}-500 text-indigo-50 upper grid place-items-center rounded-t-lg">
-    <p class="text-3xl font-bold uppercase">${e.name}</p>
-  </div>
-  <div class="p-2 md:p-4 lg:p-6 grid gap-2 md:gap-4">
-    <h2 class="font-bold text-2xl">Ore ${e.dateRange} ${e.location}</h2>
-  </div>
-</article>`
+          <div class="p-2 shadow bg-${colorScheme}-500 text-indigo-50 upper grid place-items-center">
+            <p class="text-3xl font-bold uppercase">${e.name}</p>
+          </div>
+          <div class="p-2 md:p-4 lg:p-6 grid gap-2 md:gap-4">
+            <h2 class="font-bold text-2xl">Ore ${e.dateRange} ${e.location}</h2>
+          </div>
+          </article>`
 }
 
 function createTitle(){
