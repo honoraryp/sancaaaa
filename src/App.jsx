@@ -32,6 +32,9 @@ function App() {
       const tradieciminuti = Date.now()+1000*60*60*24; //un giorno dopo
       for(let i=0; i<calendar_list.result.items.length; i++){
         let cal = calendar_list.result.items[i];
+        if(cal.id == "it.italian#holiday@group.v.calendar.google.com"){
+          continue;
+        }
         await apiCalendar.listEvents({
           calendarId: cal.id,
           timeMin: new Date(dieciminutifa).toISOString(),
@@ -49,7 +52,6 @@ function App() {
       }
       document.getElementById("events-container").innerHTML = outputs.join('');
       createTitle();
-      // document.getElementById('events_button').style.visibility = 'hidden';
       document.getElementById('root').remove()
 
     } catch (err) {
@@ -106,7 +108,7 @@ function processDate(date){
 }
 
 function mapEventObject(event){
-  const location = event.organizer.displayName ;
+  const location = event.organizer.displayName;
   const startDate = event.start.dateTime
   ? processDate(new Date(event.start.dateTime)) 
   : processDate(new Date(`${event.start.date}T00:00:00`))
@@ -134,12 +136,26 @@ function createEvent(e, i){
   const colors = ['blue', 'amber', 'indigo', 'pink', 'rose'];
   const colorScheme = colors[getRandomNumBetween(0, colors.length - 1)];
 
+  // return `<article class="bg-white shadow-xl shadow-slate-200 rounded-lg">
+  //         <div class="p-2 shadow bg-${colorScheme}-500 text-indigo-50 upper grid place-items-center rounded-t-lg">
+  //           <p class="text-3xl font-bold uppercase">${e.name}</p>
+  //         </div>
+  //         <div class="p-2 md:p-4 lg:p-6 grid gap-2 md:gap-4">
+  //           <h2 class="font-bold text-2xl">Ore ${e.dateRange} ${e.location}</h2>
+  //         </div>
+  //         </article>`
+
   return `<article class="bg-white shadow-xl shadow-slate-200 rounded-lg">
-          <div class="p-2 shadow bg-${colorScheme}-500 text-indigo-50 upper grid place-items-center">
-            <p class="text-3xl font-bold uppercase">${e.name}</p>
-          </div>
-          <div class="p-2 md:p-4 lg:p-6 grid gap-2 md:gap-4">
-            <h2 class="font-bold text-2xl">Ore ${e.dateRange} ${e.location}</h2>
+          <div class="grid-cols-5 p-2 shadow bg-${colorScheme}-500 text-justify text-indigo-50 grid rounded-lg">
+            <div> 
+              <p class="text-left text-2xl">Ore ${e.dateRange}</p>
+            </div>
+            <div class="col-start-2 col-end-5"> 
+              <p class="text-center text-3xl font-bold uppercase">${e.name}</p>
+            </div>
+            <div> 
+              <p class="text-right text-2xl">${e.location}</p>
+            </div>
           </div>
           </article>`
 }
