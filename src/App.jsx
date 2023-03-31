@@ -26,6 +26,7 @@ function App() {
   async function listUpcomingEvents() {
     let events;
     let outputs = [];
+    let dict = {};
     try {
       let calendar_list = await apiCalendar.listCalendars();
       const dieciminutifa = Date.now()-1000*60*60*24; //un giorno prima
@@ -46,9 +47,26 @@ function App() {
             events = result.items
         });
         let processedEvents = events.map(e => mapEventObject(e));
-        let ev= processedEvents.map((event, i) => createEvent(event, i)).join('')
+        for(let j=0; j<processedEvents.length; j++){
+          let time;
+          try{
+            if(processedEvents[j].dateRange.length < 5){
+              time = "0"+processedEvents[j].dateRange;
+            }
+            else{
+              time = processedEvents[j].dateRange;
+            }
+            dict[time] = processedEvents[j];
+          }catch(err){ 
+            continue;
+          }
+        }
+      }
+      let sorted = sortOnKeys(dict);
+      for(var key in sorted){
+        let evs = sorted[key];
+        let ev= createEvent(evs);
         outputs.push(ev);
-        
       }
       document.getElementById("events-container").innerHTML = outputs.join('');
       createTitle();
@@ -86,6 +104,19 @@ function App() {
   )
 }
 
+function sortOnKeys(dict) {
+  var sorted = [];
+  for(var key in dict) {
+      sorted[sorted.length] = key;
+  }
+  sorted.sort();
+  console.log(sorted);
+  var tempDict = {};
+  for(var i = 0; i < sorted.length; i++) {
+      tempDict[sorted[i]] = dict[sorted[i]];
+  }
+  return tempDict;
+}
 
 const getRandomNumBetween = (min, max) => Math.floor(Math.random() * (max-min +1)) + min;
 const getDayOfWeek = (weekday) => ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"][weekday];
@@ -132,18 +163,9 @@ function mapEventObject(event){
   }
 }
 
-function createEvent(e, i){
+function createEvent(e){
   const colors = ['blue', 'amber', 'indigo', 'pink', 'rose'];
   const colorScheme = colors[getRandomNumBetween(0, colors.length - 1)];
-
-  // return `<article class="bg-white shadow-xl shadow-slate-200 rounded-lg">
-  //         <div class="p-2 shadow bg-${colorScheme}-500 text-indigo-50 upper grid place-items-center rounded-t-lg">
-  //           <p class="text-3xl font-bold uppercase">${e.name}</p>
-  //         </div>
-  //         <div class="p-2 md:p-4 lg:p-6 grid gap-2 md:gap-4">
-  //           <h2 class="font-bold text-2xl">Ore ${e.dateRange} ${e.location}</h2>
-  //         </div>
-  //         </article>`
 
   return `<article class="bg-white shadow-xl shadow-slate-200 rounded-lg">
           <div class="grid-cols-5 p-2 shadow bg-${colorScheme}-500 text-justify text-indigo-50 grid rounded-lg">
