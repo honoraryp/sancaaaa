@@ -5,15 +5,18 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
-    'bg-blue-500',
-    'bg-amber-500',
-    'bg-rose-500',
-    'bg-indigo-500',
-    'bg-pink-500',
+    'bg-teal-500',
+    'bg-amber-300',
+    'bg-orange-500',
+    'bg-sky-300',
+    'bg-lime-600',
+    'bg-red-600',
+    'bg-fuchsia-400',
     'text-blue-50',
     'text-amber-50',
     'text-rose-50',
     'text-indigo-50',
+    'text-gray-950',
     'text-pink-50',
     'ring-blue-500',
     'ring-amber-500',
@@ -24,7 +27,7 @@ module.exports = {
     'shadow-amber-200',
     'shadow-rose-200',
     'shadow-indigo-200',
-    'shadow-pink-200',
+    'shadow-pink-200'
   ],
   theme: {
     extend: {

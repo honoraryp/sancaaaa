@@ -3,6 +3,19 @@ import ApiCalendar from 'react-google-calendar-api';
 import './App.css'
 
 let header = document.getElementById("my_header");
+let luoghi = {
+  "sala 23" : "(Piano terra, corridoio Giallo)",
+  "sala 22" : "(Piano terra, corridoio Giallo)",
+  "sala 18" : "(Piano terra, corridoio Arancio)",
+  "sala 16" : "(Piano terra, corridoio Arancio)",
+  "salone" : "(Piano terra, in fondo al corridoio, porta a destra)",
+  "sala verde" : "(Piano terra, in fondo al corridoio dopo il Salone)",
+  "biblioteca" : "(Primo piano, salite le scale a destra)",
+  "sala 39" : "(Piano interrato, a destra in fondo al corridoio)",
+  "polivalente" : "(Piano terra, porta a destra all'ingresso)",
+  "teatro" : "(Piano terra, porta a destra all'ingresso)",
+  "aula 3" : "(Primo piano, corridoio Verde)",
+}
 
 function App() {
   
@@ -13,8 +26,8 @@ function App() {
   }
 
   const config = {
-    clientId: '778032292314-3nau8dk3vbn5nbpn8njcsrp396h8idvo.apps.googleusercontent.com',
-    apiKey: 'AIzaSyA5nt6FIMdKaXpUx1Em_M_EKaxnb3zryV0',
+    clientId: '778032292314-ghr3kfa9g97t69oq6kel1js3148c83gi.apps.googleusercontent.com',
+    apiKey: 'AIzaSyA2Vh8wdc7F3sh3S_SxmT7y3UwOEs1Ypks',
     scope: 'https://www.googleapis.com/auth/calendar.readonly',
     discoveryDocs: [
       'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
@@ -29,7 +42,9 @@ function App() {
     let dict = {};
     try {
       let calendar_list = await apiCalendar.listCalendars();
-      const dieciminutifa = Date.now()-1000*60*60*24; //un giorno prima
+      const dieciminutifa = Date.now(); //un giorno prima
+      // const stasera = new Date();
+      // stasera.setUTCHours(23,59,59,999);
       const tradieciminuti = Date.now()+1000*60*60*24; //un giorno dopo
       for(let i=0; i<calendar_list.result.items.length; i++){
         let cal = calendar_list.result.items[i];
@@ -39,7 +54,7 @@ function App() {
         await apiCalendar.listEvents({
           calendarId: cal.id,
           timeMin: new Date(dieciminutifa).toISOString(),
-          timeMax: new Date(tradieciminuti).toISOString(),
+          timeMax: new Date(tradieciminuti).toISOString(),//stasera.toISOString(),
           showDeleted: false,
           singleEvents: true,
           orderBy: 'startTime'
@@ -68,9 +83,12 @@ function App() {
         let ev= createEvent(evs);
         outputs.push(ev);
       }
+      console.log(outputs)
       document.getElementById("events-container").innerHTML = outputs.join('');
       createTitle();
-      document.getElementById('root').remove()
+      try{
+        document.getElementById('root').remove()
+      }catch(err){}
 
     } catch (err) {
       console.log(err.message)
@@ -110,7 +128,6 @@ function sortOnKeys(dict) {
       sorted[sorted.length] = key;
   }
   sorted.sort();
-  console.log(sorted);
   var tempDict = {};
   for(var i = 0; i < sorted.length; i++) {
       tempDict[sorted[i]] = dict[sorted[i]];
@@ -118,7 +135,7 @@ function sortOnKeys(dict) {
   return tempDict;
 }
 
-const getRandomNumBetween = (min, max) => Math.floor(Math.random() * (max-min +1)) + min;
+// const getRandomNumBetween = (min, max) => Math.floor(Math.random() * (max-min +1)) + min;
 const getDayOfWeek = (weekday) => ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"][weekday];
 const getMonth = (month) => ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][month];
 
@@ -164,19 +181,41 @@ function mapEventObject(event){
 }
 
 function createEvent(e){
-  const colors = ['blue', 'amber', 'indigo', 'pink', 'rose'];
-  const colorScheme = colors[getRandomNumBetween(0, colors.length - 1)];
-
+  // const colors = ['blue', 'amber', 'indigo', 'pink', 'rose'];
+  // const colorScheme = colors[getRandomNumBetween(0, colors.length - 1)];
+  let colorScheme = "teal-500";
+  /*try{
+    if(e.location.toLowerCase() == "sala 23" || e.location.toLowerCase() == "sala 22" || e.location.toLowerCase() == "sala 25"){
+      colorScheme = "amber-300";
+    }
+    else if(e.location.toLowerCase() == "sala 18" || e.location.toLowerCase() == "sala 16"){
+      colorScheme = "orange-500";
+    }
+    else if(e.location.toLowerCase() == "salone" || e.location.toLowerCase() == "sala verde"){
+      colorScheme = "sky-300";
+    }
+    else if(e.location.toLowerCase() == "aula 3" || e.location.toLowerCase() == "sala 15 (universitaria)"|| e.location.toLowerCase() == "sala 15(universitaria)"|| e.location.toLowerCase() == "sala 15"){
+      colorScheme = "lime-600";
+    }
+    else if(e.location.toLowerCase() == "ex biblioteca" || e.location.toLowerCase() == "sala 39"){
+      colorScheme = "red-600";
+    }
+    else if(e.location.toLowerCase() == "teatro" || e.location.toLowerCase() == "polivalente" || e.location.toLowerCase() == "teatro polivalente" ){
+      colorScheme = "fuchsia-400";
+    }
+  }catch(err){}*/
+  // console.log(e)
   return `<article class="bg-white shadow-xl shadow-slate-200 rounded-lg">
-          <div class="grid-cols-5 p-2 shadow bg-${colorScheme}-500 text-justify text-indigo-50 grid rounded-lg">
+          <div class="grid-cols-6 p-2 shadow bg-${colorScheme} text-justify text-gray-950 grid rounded-lg">
             <div> 
               <p class="text-left text-2xl">Ore ${e.dateRange}</p>
             </div>
             <div class="col-start-2 col-end-5"> 
               <p class="text-center text-3xl font-bold uppercase">${e.name}</p>
             </div>
-            <div> 
-              <p class="text-right text-2xl">${e.location}</p>
+            <div class="col-start-5 col-end-7"> 
+              <p class="text-center text-2xl">${e.location}</p>
+              <p class="text-center text-2xl">${luoghi[e.location.toLowerCase()]}</p>
             </div>
           </div>
           </article>`
