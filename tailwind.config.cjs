@@ -10,7 +10,7 @@ module.exports = {
     'bg-orange-500',
     'bg-sky-300',
     'bg-lime-600',
-    'bg-red-600',
+    'bg-red-400',
     'bg-fuchsia-400',
     'text-blue-50',
     'text-amber-50',

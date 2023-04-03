@@ -9,6 +9,7 @@ let luoghi = {
   "sala 18" : "(Piano terra, corridoio Arancio)",
   "sala 16" : "(Piano terra, corridoio Arancio)",
   "salone" : "(Piano terra, in fondo al corridoio, porta a destra)",
+  "sala giochi" : "(Piano terra, in fondo al corridoio, porta a destra)",
   "sala verde" : "(Piano terra, in fondo al corridoio dopo il Salone)",
   "biblioteca" : "(Primo piano, salite le scale a destra)",
   "sala 39" : "(Piano interrato, a destra in fondo al corridoio)",
@@ -39,22 +40,24 @@ function App() {
   async function listUpcomingEvents() {
     let events;
     let outputs = [];
-    let dict = {};
+    let sorted = [];
     try {
       let calendar_list = await apiCalendar.listCalendars();
       const dieciminutifa = Date.now(); //un giorno prima
-      // const stasera = new Date();
-      // stasera.setUTCHours(23,59,59,999);
+      const stasera = new Date();
+      stasera.setUTCHours(23,59,59,999);
       const tradieciminuti = Date.now()+1000*60*60*24; //un giorno dopo
       for(let i=0; i<calendar_list.result.items.length; i++){
         let cal = calendar_list.result.items[i];
-        if(cal.id == "it.italian#holiday@group.v.calendar.google.com"){
+        if(cal.id == "it.italian#holiday@group.v.calendar.google.com" || cal.id == "addressbook#contacts@group.v.calendar.google.com"){
           continue;
         }
+        // console.log(cal)
         await apiCalendar.listEvents({
           calendarId: cal.id,
           timeMin: new Date(dieciminutifa).toISOString(),
-          timeMax: new Date(tradieciminuti).toISOString(),//stasera.toISOString(),
+          timeMax: new Date(tradieciminuti).toISOString(),
+          // timeMax: stasera.toISOString(),
           showDeleted: false,
           singleEvents: true,
           orderBy: 'startTime'
@@ -62,47 +65,67 @@ function App() {
             events = result.items
         });
         let processedEvents = events.map(e => mapEventObject(e));
-        for(let j=0; j<processedEvents.length; j++){
-          let time;
-          try{
-            if(processedEvents[j].dateRange.length < 5){
-              time = "0"+processedEvents[j].dateRange;
-            }
-            else{
-              time = processedEvents[j].dateRange;
-            }
-            dict[time] = processedEvents[j];
-          }catch(err){ 
-            continue;
-          }
+        // let ev = processedEvents.map(e => createEvent(e)).join('');
+        if(processedEvents.length>0){
+          outputs.push(processedEvents);
         }
+        // console.log(processedEvents)
+        
+        // for(let j=0; j<processedEvents.length; j++){
+        //   let time;
+        //   try{
+        //     if(processedEvents[j].dateRange.length < 5){
+        //       time = "0"+processedEvents[j].dateRange;
+        //     }
+        //     else{
+        //       time = processedEvents[j].dateRange;
+        //     }
+        //     dict[time] = processedEvents[j];
+        //   }catch(err){ 
+        //     continue;
+        //   }
+        // }
       }
-      let sorted = sortOnKeys(dict);
-      for(var key in sorted){
-        let evs = sorted[key];
-        let ev= createEvent(evs);
-        outputs.push(ev);
+      // let sorted = sortOnKeys(dict);
+      
+      // console.log(outputs)
+      let notSorted = [].concat(...outputs)
+      // sorted.sort()
+      // sortArrayOfCalendarEventsChronologically(sorted)
+      console.log(notSorted)
+      // console.log(sorted[0].inizio)
+      notSorted.sort(
+        (eventA, eventB) => ( eventA.inizio - eventB.inizio )
+      )
+      console.log(notSorted)
+      sorted = notSorted
+      // console.log(outputs)
+      for(var i in sorted){
+        // let evs = sorted[key];
+        sorted[i]= createEvent(sorted[i]);
+        // sorted.push(ev);
       }
-      console.log(outputs)
-      document.getElementById("events-container").innerHTML = outputs.join('');
+      // console.log(outputs)
+      document.getElementById("events-container").innerHTML = sorted.join('');
       createTitle();
-      try{
-        document.getElementById('root').remove()
-      }catch(err){}
+      // try{
+      //   document.getElementById('root').remove()
+      // }catch(err){}
+      // console.log(events)
 
     } catch (err) {
       console.log(err.message)
     }
 
-    if (!events || events.length == 0) {
+    if (!sorted || sorted.length == 0) {
       document.getElementById('events-container').innerHTML = 'No events found.';
       return;
     }
   }
 
-  setInterval(() => {
-    listUpcomingEvents();
-  }, 1000*60*5);
+  // setInterval(() => {
+  //   listUpcomingEvents();
+  // }, 1000*60*5);
 
   return (
     <div className="App">
@@ -122,20 +145,19 @@ function App() {
   )
 }
 
-function sortOnKeys(dict) {
-  var sorted = [];
-  for(var key in dict) {
-      sorted[sorted.length] = key;
+function sortArrayOfCalendarEventsChronologically(array) {
+  if (!array || array.length == 0) {
+    return 0;
   }
-  sorted.sort();
-  var tempDict = {};
-  for(var i = 0; i < sorted.length; i++) {
-      tempDict[sorted[i]] = dict[sorted[i]];
+  var temp = [];
+  let mid=Math.floor((array.length)/2);
+  temp.push(array[mid]);
+  for(var i=0; i<array.length; i++){
+    
   }
-  return tempDict;
+  return temp;
 }
 
-// const getRandomNumBetween = (min, max) => Math.floor(Math.random() * (max-min +1)) + min;
 const getDayOfWeek = (weekday) => ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"][weekday];
 const getMonth = (month) => ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][month];
 
@@ -171,39 +193,42 @@ function mapEventObject(event){
   } else {
     dateRange = `${startDate.time}`;
   }
+  const inizio = new Date(event.start.dateTime)
+  console.log(event.summary, inizio)
+  ? new Date(event.end.dateTime)
+  : new Date(`${event.end.date}T00:00:00`)
   return {
     name: event.summary.toUpperCase(),
     start: startDate,
     end: endDate,
     dateRange,
-    location
+    location,
+    inizio
   }
 }
 
 function createEvent(e){
-  // const colors = ['blue', 'amber', 'indigo', 'pink', 'rose'];
-  // const colorScheme = colors[getRandomNumBetween(0, colors.length - 1)];
   let colorScheme = "teal-500";
-  /*try{
+  try{
     if(e.location.toLowerCase() == "sala 23" || e.location.toLowerCase() == "sala 22" || e.location.toLowerCase() == "sala 25"){
       colorScheme = "amber-300";
     }
     else if(e.location.toLowerCase() == "sala 18" || e.location.toLowerCase() == "sala 16"){
       colorScheme = "orange-500";
     }
-    else if(e.location.toLowerCase() == "salone" || e.location.toLowerCase() == "sala verde"){
+    else if(e.location.toLowerCase() == "salone" || e.location.toLowerCase() == "sala verde" || e.location.toLowerCase() == "sala giochi"){
       colorScheme = "sky-300";
     }
     else if(e.location.toLowerCase() == "aula 3" || e.location.toLowerCase() == "sala 15 (universitaria)"|| e.location.toLowerCase() == "sala 15(universitaria)"|| e.location.toLowerCase() == "sala 15"){
       colorScheme = "lime-600";
     }
-    else if(e.location.toLowerCase() == "ex biblioteca" || e.location.toLowerCase() == "sala 39"){
-      colorScheme = "red-600";
+    else if(e.location.toLowerCase() == "biblioteca" || e.location.toLowerCase() == "sala 39"){
+      colorScheme = "red-400";
     }
     else if(e.location.toLowerCase() == "teatro" || e.location.toLowerCase() == "polivalente" || e.location.toLowerCase() == "teatro polivalente" ){
       colorScheme = "fuchsia-400";
     }
-  }catch(err){}*/
+  }catch(err){}
   // console.log(e)
   return `<article class="bg-white shadow-xl shadow-slate-200 rounded-lg">
           <div class="grid-cols-6 p-2 shadow bg-${colorScheme} text-justify text-gray-950 grid rounded-lg">
@@ -215,7 +240,7 @@ function createEvent(e){
             </div>
             <div class="col-start-5 col-end-7"> 
               <p class="text-center text-2xl">${e.location}</p>
-              <p class="text-center text-2xl">${luoghi[e.location.toLowerCase()]}</p>
+              <p class="text-center text-2xl">${luoghi[e.location]}</p>
             </div>
           </div>
           </article>`
