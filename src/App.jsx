@@ -18,15 +18,11 @@ let luoghi = {
   "aula 3" : "(Primo piano, corridoio Verde)",
   "":""
 }
+
 let description;
 const ora = Date.now();
-function App() {
-  
-  const [loggedIn, setLoggedIn] = useState(false)
 
-  function changeLoggedIn() {
-    setLoggedIn(!loggedIn)
-  }
+function App() {
 
   const config = {
     clientId: '778032292314-ghr3kfa9g97t69oq6kel1js3148c83gi.apps.googleusercontent.com',
@@ -36,8 +32,10 @@ function App() {
       'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
     ],
   };
-  
+
   const apiCalendar = new ApiCalendar(config);
+
+  const [loggedIn, setLoggedIn] = useState(false)
 
   async function listUpcomingEvents() {
     let events;
@@ -103,12 +101,22 @@ function App() {
       
       {loggedIn ? (
         <div>
-          <button id="events_button" onClick={listUpcomingEvents}>Events</button>
+          <button id="events_button" onClick={() => {
+            listUpcomingEvents()
+          }
+          }>Refresh events</button>
         </div>
       ) : (
         <button id="signin_button" onClick={() => {
+          apiCalendar.tokenClient.callback = async (resp) => {
+            if (resp.error !== undefined) {
+              throw (resp);
+            }
+            console.log("user logged in")
+            listUpcomingEvents()
+            setLoggedIn(true)
+          };
           apiCalendar.handleAuthClick()
-          changeLoggedIn()
         }}> Sign In </button>
       )}
 
@@ -197,7 +205,7 @@ function createEvent(e){
       colorScheme = "from-mauve to-b-mauve";
       text = "text-slate-100";
     }
-  }catch(err){}
+  } catch (err) {}
   return `<article class="bg-white shadow-2xl shadow-slate-200 rounded-lg">
           <div class="grid-cols-7 p-3 shadow-2xl bg-gradient-to-br ${colorScheme} text-justify ${text} grid rounded-lg">
             <div> 
@@ -208,7 +216,7 @@ function createEvent(e){
             </div>
             <div class="col-start-5 col-end-7"> 
               <p class="text-center text-2xl">${e.location}</p>
-              <p class="text-center text-2xl">${luoghi[e.location.toLowerCase()]}</p>
+              <p class="text-center text-2xl">${luoghi[e.location?.toLowerCase()]}</p>
             </div>
             <div> 
               <p class="text-center text-2xl">${e.stato}</p>
