@@ -101,11 +101,12 @@ function App() {
             console.log("user logged in")
             console.log("Running setInterval...")
             setInterval(() => {
+              pageScroll();
+              console.log("weeeeee")
+            }, 1000*60);
+            setInterval(() => {
               listUpcomingEvents();
               console.log("Updated events")
-            }, 1000*60*10);
-            setInterval(() => {
-              pageScroll();
             }, 1000*60*10);
             listUpcomingEvents()
           };
@@ -192,7 +193,7 @@ function createEvent(e){
       colorScheme = "from-mars to-conquest";
     }
     else if(e.location.toLowerCase() == "salone" || e.location.toLowerCase() == "sala verde" || e.location.toLowerCase() == "sala giochi"){
-      colorScheme = "from-nice-blue to-nice-blue-light";
+      colorScheme = "from-nice-blue-light to-nice-blue";
       text = "text-slate-900"
     }
     else if(e.location.toLowerCase() == "aula 3" || e.location.toLowerCase() == "sala 15 (universitaria)"|| e.location.toLowerCase() == "sala 15(universitaria)"|| e.location.toLowerCase() == "sala 15"){
