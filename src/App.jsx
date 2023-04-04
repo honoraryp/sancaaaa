@@ -168,7 +168,7 @@ function mapEventObject(event){
     stato = "Evento in corso"
   }
   else{ 
-    stato = "prossimo evento"
+    stato = ""
   }
   return {
     name: event.summary.toUpperCase(),
