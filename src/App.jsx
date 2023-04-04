@@ -76,9 +76,9 @@ function App() {
       }
       document.getElementById("events-container").innerHTML = sorted.join('');
       createTitle();
-      try{
-        document.getElementById('root').remove()
-      }catch(err){}
+      // try{
+      //   document.getElementById('root').remove()
+      // }catch(err){}
 
     } catch (err) {
       console.log(err.message)
@@ -200,7 +200,7 @@ function createEvent(e){
     }
   } catch (err) {}
   return `<article class="bg-white shadow-2xl shadow-slate-200 rounded-lg">
-          <div class="grid-cols-7 p-3 shadow-2xl bg-gradient-to-br ${colorScheme} text-justify ${text} grid rounded-lg">
+          <div class="grid-cols-7 items-center p-3 shadow-2xl bg-gradient-to-br ${colorScheme} text-justify ${text} grid rounded-lg">
             <div> 
               <p class="text-left text-2xl">Ore ${e.dateRange}</p>
             </div>
@@ -209,7 +209,7 @@ function createEvent(e){
             </div>
             <div class="col-start-5 col-end-7"> 
               <p class="text-center text-2xl">${e.location}</p>
-              <p class="text-center text-2xl">${luoghi[e.location?.toLowerCase()]}</p>
+              <p class="text-center text-xl">${luoghi[e.location?.toLowerCase()]}</p>
             </div>
             <div> 
               <p class="text-center text-2xl">${e.stato}</p>
