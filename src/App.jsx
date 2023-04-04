@@ -76,9 +76,9 @@ function App() {
       }
       document.getElementById("events-container").innerHTML = sorted.join('');
       createTitle();
-      // try{
-      //   document.getElementById('root').remove()
-      // }catch(err){}
+      try{
+        document.getElementById('root').remove()
+      }catch(err){}
 
     } catch (err) {
       console.log(err.message)
