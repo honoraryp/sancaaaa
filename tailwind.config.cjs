@@ -1,40 +1,39 @@
 /** @type {import('tailwindcss').Config} */
+
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  safelist: [
-    'bg-teal-500',
-    'bg-amber-300',
-    'bg-orange-500',
-    'bg-sky-300',
-    'bg-lime-600',
-    'bg-red-400',
-    'bg-fuchsia-400',
-    'text-blue-50',
-    'text-amber-50',
-    'text-rose-50',
-    'text-indigo-50',
-    'text-gray-950',
-    'text-pink-50',
-    'ring-blue-500',
-    'ring-amber-500',
-    'ring-rose-500',
-    'ring-indigo-500',
-    'ring-pink-500',
-    'shadow-blue-200',
-    'shadow-amber-200',
-    'shadow-rose-200',
-    'shadow-indigo-200',
-    'shadow-pink-200'
   ],
   theme: {
     extend: {
         gridTemplateRows: {
             "auto1" : "auto 1fr",
         },
+        colors: {
+          'white': '#ffffff',
+          'black': '#000000',
+          'nice-blue': '#2193b0',
+          'nice-blue-light': '#6dd5ed',
+          'purple': '#cc2b5e',
+          'love': '#753a88',
+          'mauve': '#42275a',
+          'b-mauve': '#734b6d',
+          'lush': '#56ab2f',
+          'b-lush': '#a8e063',
+          'soda': '#ffdd00',
+          'b-soda': '#fbb034',
+          'mars': '#ec9f05',
+          'conquest': '#ff4e00',
+          'luscious': '#009245',
+          'lime': '#fcee21',
+        },
     },
 },
-  plugins: [],
+  plugins: [
+    require('tailwindcss'),
+    require('autoprefixer'),
+  ],
 }
