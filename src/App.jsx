@@ -90,10 +90,10 @@ function App() {
     }
   }
 
-  console.log("setInterval run")
-  setInterval(() => {
-    listUpcomingEvents();
-  }, 1000*60*10);
+  // console.log("Running setInterval...")
+  // setInterval(() => {
+  //   listUpcomingEvents();
+  // }, 1000*60*10);
 
   return (
     <div className="App">
@@ -104,6 +104,11 @@ function App() {
               throw (resp);
             }
             console.log("user logged in")
+            console.log("Running setInterval...")
+            setInterval(() => {
+              listUpcomingEvents();
+              console.log("Updated events")
+            }, 1000);
             listUpcomingEvents()
           };
           apiCalendar.handleAuthClick()
