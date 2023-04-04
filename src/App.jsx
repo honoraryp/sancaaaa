@@ -35,8 +35,6 @@ function App() {
 
   const apiCalendar = new ApiCalendar(config);
 
-  const [loggedIn, setLoggedIn] = useState(false)
-
   async function listUpcomingEvents() {
     let events;
     let outputs = [];
@@ -92,21 +90,14 @@ function App() {
     }
   }
 
+  console.log("setInterval run")
   setInterval(() => {
     listUpcomingEvents();
   }, 1000*60*10);
 
   return (
     <div className="App">
-      
-      {loggedIn ? (
-        <div>
-          <button id="events_button" onClick={() => {
-            listUpcomingEvents()
-          }
-          }>Refresh events</button>
-        </div>
-      ) : (
+      <div id="buttons">
         <button id="signin_button" onClick={() => {
           apiCalendar.tokenClient.callback = async (resp) => {
             if (resp.error !== undefined) {
@@ -114,12 +105,14 @@ function App() {
             }
             console.log("user logged in")
             listUpcomingEvents()
-            setLoggedIn(true)
           };
           apiCalendar.handleAuthClick()
         }}> Sign In </button>
-      )}
-
+        <button id="events_button" onClick={() => {
+          listUpcomingEvents()
+        }
+        }>Refresh events</button>
+      </div>
     </div>
   )
 }
