@@ -200,14 +200,14 @@ function createEvent(e){
     }
   } catch (err) {}
   return `<article class="bg-white shadow-2xl shadow-slate-200 rounded-lg">
-          <div class="grid-cols-7 items-center p-3 shadow-2xl bg-gradient-to-br ${colorScheme} text-justify ${text} grid rounded-lg">
+          <div class="grid-cols-9 items-center p-3 shadow-2xl bg-gradient-to-br ${colorScheme} text-justify ${text} grid rounded-lg">
             <div> 
               <p class="text-left text-2xl">Ore ${e.dateRange}</p>
             </div>
-            <div class="col-start-2 col-end-5"> 
+            <div class="col-start-2 col-end-6"> 
               <p class="text-center text-3xl font-bold uppercase">${e.name}</p>
             </div>
-            <div class="col-start-5 col-end-7"> 
+            <div class="col-start-6 col-end-9"> 
               <p class="text-center text-2xl">${e.location}</p>
               <p class="text-center text-xl">${luoghi[e.location?.toLowerCase()]}</p>
             </div>
