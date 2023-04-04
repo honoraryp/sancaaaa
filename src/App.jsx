@@ -100,12 +100,12 @@ function App() {
             }
             console.log("user logged in")
             console.log("Running setInterval...")
-            pageScroll();
             setInterval(() => {
               listUpcomingEvents();
               console.log("Updated events")
             }, 1000*60*10);
             listUpcomingEvents()
+            // pageScroll()
           };
           apiCalendar.handleAuthClick()
         }}> Sign In </button>
@@ -118,10 +118,12 @@ function App() {
   )
 }
 
-function pageScroll() {
-  window.scrollBy(0,1);
-  scrolldelay = setTimeout(pageScroll,10);
-}
+// function pageScroll() {
+//   window.scrollBy(0,1);
+//   scrolldelay = setTimeout(pageScroll,10);
+//   window.scrollBy(0,-1);
+//   scrolldelay = setTimeout(pageScroll,-10);
+// }
 
 const getDayOfWeek = (weekday) => ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"][weekday];
 const getMonth = (month) => ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][month];
