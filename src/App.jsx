@@ -100,10 +100,7 @@ function App() {
             }
             console.log("user logged in")
             console.log("Running setInterval...")
-            setInterval(() => {
-              pageScroll();
-              console.log("weeeeee")
-            }, 1000*60);
+            pageScroll();
             setInterval(() => {
               listUpcomingEvents();
               console.log("Updated events")
