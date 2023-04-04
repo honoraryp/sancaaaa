@@ -192,7 +192,7 @@ function createEvent(e){
     }
     else if(e.location.toLowerCase() == "biblioteca" || e.location.toLowerCase() == "sala 39"){
       colorScheme = "from-purple to-love";
-      text = "text-slate-300";
+      text = "text-slate-100";
     }
     else if(e.location.toLowerCase() == "teatro" || e.location.toLowerCase() == "polivalente" || e.location.toLowerCase() == "teatro polivalente" ){
       colorScheme = "from-mauve to-b-mauve";
