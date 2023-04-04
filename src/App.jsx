@@ -20,7 +20,7 @@ let luoghi = {
 }
 
 let description;
-const ora = Date.now() + 7200000;
+const ora = Date.now() + 3600000;
 
 function App() {
 
