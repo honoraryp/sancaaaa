@@ -104,6 +104,9 @@ function App() {
               listUpcomingEvents();
               console.log("Updated events")
             }, 1000*60*10);
+            setInterval(() => {
+              pageScroll();
+            }, 1000*60*10);
             listUpcomingEvents()
           };
           apiCalendar.handleAuthClick()
@@ -115,6 +118,11 @@ function App() {
       </div>
     </div>
   )
+}
+
+function pageScroll() {
+  window.scrollBy(0,1);
+  scrolldelay = setTimeout(pageScroll,10);
 }
 
 const getDayOfWeek = (weekday) => ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"][weekday];
